@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 5s # Get data every 5 seconds
+
+scrape_configs:
+  - job_name: 'obelix-webshop'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+
+  - job_name: 'obelix-quarry'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8081']

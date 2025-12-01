@@ -3,7 +3,10 @@ package ch.bbw.obelix.quarry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "ch.bbw.obelix")
+@SpringBootApplication(scanBasePackages = {
+        "ch.bbw.obelix.quarry",
+        "ch.bbw.obelix.common"
+})
 public class ObelixQuarryApplication {
 
 	public static void main(String[] args) {
