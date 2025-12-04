@@ -10,11 +10,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = ObelixWebshopApplication.class)
 class ObelixWebshopApplicationTests {
 
     @Autowired
@@ -30,13 +31,8 @@ class ObelixWebshopApplicationTests {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(menhirs).isNotNull();
-        if (menhirs.isEmpty()) {
-            System.err.println("WARNING: No menhirs found in the connected Quarry application. Skipping 'buy' test logic.");
-            return;
-        }
-
-        var anyId = menhirs.get(0).id();
+        assertThat(menhirs).isNotNull().isNotEmpty();
+        UUID anyId = menhirs.get(0).id();
 
         webTestClient.post()
                 .uri("/api/basket/exchange/{id}", anyId)

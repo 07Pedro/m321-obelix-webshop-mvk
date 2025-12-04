@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,13 +66,17 @@ public class BasketService {
 
     public void exchange(UUID menhirId) {
         // exchange everything in basket for menhir
-        var menhir = quarryWebclientService.getMenhirById(menhirId);
-        var decorativeness = menhir.decorativeness();
-        if (!isGoodOffer(decorativeness)) {
-            throw new BadOfferException("Bad Offer: That won't even feed Idefix!");
+        try {
+            var menhir = quarryWebclientService.getMenhirById(menhirId);
+            var decorativeness = menhir.decorativeness();
+            if (!isGoodOffer(decorativeness)) {
+                throw new BadOfferException("Bad Offer: That won't even feed Idefix!");
+            }
+            quarryWebclientService.deleteById(menhirId);
+            leave();
+        } catch (WebClientResponseException.BadRequest e) {
+            throw new BadOfferException("Bad Offer: That menhir is not available!");
         }
-        quarryWebclientService.deleteById(menhirId);
-        leave();
     }
 
     @StandardException
